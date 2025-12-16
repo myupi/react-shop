@@ -1,19 +1,18 @@
-import { useEffect } from "react";
 import { Button, CardImage, CardWrapper } from "./card.s";
 
-function Card({ item, addToOrder, isInOrders }) {
-  const inOrders = isInOrders(item);
+function Card({ item, addToOrder, inCart }) {
+  const { img, title, desc, price } = item;
   return (
     <CardWrapper>
       <CardImage>
-        <img src={item.img} width="100%" />
+        <img src={img} width="100%" alt={title} />
       </CardImage>
-      <h2>{item.title}</h2>
-      <p>{item.desc}</p>
-      <p style={{ fontWeight: "bold" }}>{item.price}$</p>
+      <h2>{title}</h2>
+      <p>{desc}</p>
+      <b>{price}$</b>
 
-      <Button onClick={() => addToOrder(item)} disabled={inOrders}>
-        {inOrders ? <p>В корзинке</p> : <p>+</p>}
+      <Button onClick={() => addToOrder(item)} disabled={inCart}>
+        {inCart ? <p>В корзинке</p> : <p>+</p>}
       </Button>
     </CardWrapper>
   );

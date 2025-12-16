@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./header.css";
 import { FaShoppingCart } from "react-icons/fa";
 import Order from "../../ui/Order/Order";
+import { Link } from "react-router-dom";
 
 function Header({ orders, removeFromOrder }) {
   let [cartOpen, setCartOpen] = useState(false);
@@ -9,14 +10,16 @@ function Header({ orders, removeFromOrder }) {
   const cartRef = useRef(null);
 
   useEffect(() => {
+    if (!cartOpen) return;
+
     function handleClickOutside(e) {
       if (cartOpen && cartRef.current && !cartRef.current.contains(e.target)) {
         setCartOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("pointerdown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("pointerdown", handleClickOutside);
     };
   }, [cartOpen]);
 
@@ -25,8 +28,15 @@ function Header({ orders, removeFromOrder }) {
       <div>
         <span className="logo">House Stuff</span>
         <ul className="nav">
-          <li>Про нас</li>
-          <li>Контакты</li>
+          <li>
+            <Link to="/">Главная</Link>
+          </li>
+          <li>
+            <Link to="/about">О нас</Link>
+          </li>
+          <li>
+            <Link to="/contact">Контакты</Link>
+          </li>
           <li>
             <FaShoppingCart
               size={25}
@@ -62,10 +72,6 @@ function Header({ orders, removeFromOrder }) {
             </div>
           )}
         </ul>
-      </div>
-      <div className="presentation">
-        <h1>Лучшие товары по низким ценам</h1>
-        <p>по низким ценам</p>
       </div>
     </header>
   );

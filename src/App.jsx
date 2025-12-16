@@ -1,55 +1,33 @@
-import Footer from "./components/layout/Footer/Footer";
-import Header from "./components/layout/Header/Header";
-import Items from "./components/Items";
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 
-const AppWrapper = styled.div`
-  width: 1280px;
-  margin: 50px auto;
-`;
+import { removeFromOrders } from "./utils";
+import { Route, Routes } from "react-router-dom";
+import { AppWrapper } from "./App.s";
+
+import Header from "./components/layout/Header/Header";
+import Footer from "./components/layout/Footer/Footer";
+import MainPage from "./pages/MainPage";
+import AboutUsPage from "./pages/AboutUsPage";
+import ContactsPage from "./pages/ContactsPage";
 
 function App() {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
 
-  async function fetchItems() {
-    try {
-      setLoading(true);
-      const res = await axios.get("https://junior-data.netlify.app/data.json");
-      setItems(res.data);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const addToOrder = (item) => {
-    const findItem = orders.find((o) => o.id === item.id);
-    if (!findItem) {
-      setOrders([...orders, item]);
-    }
+  const handleRemove = (id) => {
+    setOrders((prev) => removeFromOrders(prev, id));
   };
 
-  const removeFromOrder = (id) => {
-    setOrders(orders.filter((item) => item.id !== id));
-  };
   return (
     <AppWrapper>
-      <Header orders={orders} removeFromOrder={removeFromOrder} />
-      <Items
-        items={items}
-        loading={loading}
-        addToOrder={addToOrder}
-        orders={orders}
-      />
+      <Header orders={orders} removeFromOrder={handleRemove} />
+      <Routes>
+        <Route
+          path="/"
+          element={<MainPage orders={orders} setOrders={setOrders} />}
+        />
+        <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/contact" element={<ContactsPage />} />
+      </Routes>
       <Footer />
     </AppWrapper>
   );
